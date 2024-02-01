@@ -1,4 +1,4 @@
-FROM alpine AS build
+FROM alpine AS base
 
 ARG TAG=latest
 RUN (([[ "$TAG" = "latest" ]] && DOWNLOAD="latest/download") || DOWNLOAD="download/${TAG}") && \
@@ -7,5 +7,5 @@ RUN (([[ "$TAG" = "latest" ]] && DOWNLOAD="latest/download") || DOWNLOAD="downlo
 
 FROM pierrezemb/gostatic
 
-COPY --from=build /build /srv/http
+COPY --from=base /build /srv/http
 EXPOSE 8043

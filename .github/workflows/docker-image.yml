@@ -38,13 +38,16 @@ jobs:
         with:
           repository: ${{ env.SOURCE_REPOSITORY }}
           ref: ${{ needs.get-tag.outputs.tag }}
-      - name: Patch Dockerfile
+      - name: Apply patch
         run: |
           git fetch --unshallow
           if git ls-remote origin pull/526/head; then
+            wget https://raw.githubusercontent.com/Stremio/stremio-web/6a14025c9cc2c15dd7020674a04d08601cc0f28c/.dockerignore
+            sed -i '1,2d' .dockerignore
             rm Dockerfile
             wget https://raw.githubusercontent.com/Stremio/stremio-web/6a14025c9cc2c15dd7020674a04d08601cc0f28c/Dockerfile
-           fi
+            rm http_server.js
+          fi
       - name: Set Docker Hub username
         id: dockerhub-username
         run: echo "username=${DOCKERHUB_REPOSITORY%%/*}" >> $GITHUB_OUTPUT
